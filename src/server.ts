@@ -1,12 +1,15 @@
 import express from "express";
 import convertHourStringToMinutes from "./utils/convertHourStringToMinutes"
+import convertMinutesToHourString from "./utils/convertMinutesToHourString"
 const Ads = require("./models/Ad.js")
 const Games = require("./models/Game.js")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv/config")
+const cors = require("cors")
 
 const app = express();
 app.use(express.json())
+app.use(cors())
 
 app.get("/games", async (req,res) => {
   try{
@@ -67,7 +70,7 @@ interface adProps {
   hourStart: number,
   hourEnd: number,
   useVoiceChannel: boolean,
-  createdAt: string
+  createdAt: Date
 }
 
 app.get("/games/:id/ads", async (req, res) => {
@@ -82,8 +85,8 @@ app.get("/games/:id/ads", async (req, res) => {
         name: ad.name,
         yearsPlaying: ad.yearsPlaying,
         weekDays: ad.weekDays,
-        hourStart: ad.hourStart,
-        hourEnd: ad.hourEnd,
+        hourStart: convertMinutesToHourString(ad.hourStart),
+        hourEnd: convertMinutesToHourString(ad.hourEnd),
         useVoiceChannel: ad.useVoiceChannel,
         createdAt: ad.createdAt,
       }
